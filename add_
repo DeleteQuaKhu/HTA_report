@@ -1,0 +1,18 @@
+def get_element_node_ids(self, element_id, elset_name):
+    """
+    Returns the node IDs associated with a given element ID from a specific ELSET.
+    Searches through the elements in the specified ELSET to find the element.
+    
+    :param element_id: ID of the element to search for
+    :param elset_name: Name of the ELSET to search within (e.g., SolidProperty1)
+    :return: List of node IDs for the element, or None if not found
+    """
+    if elset_name in self.elements:
+        elements_in_elset = self.elements[elset_name]
+        if element_id in elements_in_elset:
+            return elements_in_elset[element_id]
+        else:
+            print(f"Error: Element ID {element_id} not found in ELSET {elset_name}.")
+    else:
+        print(f"Error: ELSET {elset_name} not found.")
+    return None
