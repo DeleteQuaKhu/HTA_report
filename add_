@@ -218,17 +218,15 @@ class AbaqusModelManager:
                 return elements[element_id]
         print(f"Error: Element ID {element_id} not found.")
         return None
-
-    def get_elements_in_elset(self, elset_name):
-        """
-        Returns the element IDs associated with a given ELSET.
-        """
+    def is_element_in_elset(self, element_id, elset_name):
+        # Check if the ELSET exists in the elements dictionary
         if elset_name in self.elements:
-            # Return all element IDs in this ELSET
-            return list(self.elements[elset_name].keys())
-        else:
-            print(f"Error: ELSET '{elset_name}' not found.")
-            return None
+            # Check if the element ID is in the specified ELSET
+            if element_id in self.elements[elset_name]:
+                return True
+        # If ELSET or element ID is not found, return False
+        return False
+
     def get_node_coordinates(self, node_id):
         """
         Returns the coordinates (x, y, z) associated with a given node ID.
@@ -268,7 +266,7 @@ def remove_duplicates(input_list):
             seen.add(item)
     
     return output_list
-def find_coordinate_from_group(file_path, group, part):
+def find_coordinate_from_group(file_path, group):
     # Specify the file path for the .inp file
     # file_path = r"C:\Users\TechnoStar\Documents\macro\read_model\Job_1.inp"
 
@@ -296,29 +294,27 @@ def find_coordinate_from_group(file_path, group, part):
 
     # surface_name = "group2"
     element_ids = model_manager.get_element_ids_from_surface(group)
+    print()
     for element_id in element_ids:
-        surface_sides = model_manager.get_surface_side(element_id)
-        # print(surface_sides[0][1])
-        node_ids = model_manager.get_element_node_ids(element_id)
-        # print(node_ids)
-        elements_in_elset = model_manager.get_elements_in_elset(part)
-        # print(elements_in_elset)
-        list_node_id.append(elements_in_elset)
-        # print(node_ids)
-        node_ids_of_faces = reorder_values(elements_in_elset, surface_sides[0][1])
-        list_node_ids_of_faces = list_node_ids_of_faces + node_ids_of_faces
-        # print(node_ids_of_faces)
-    # print(list_node_ids_of_faces)
-    list_node_ids_of_faces_remove_duplicates = remove_duplicates(list_node_ids_of_faces)
-    print(list_node_ids_of_faces_remove_duplicates)
-    for id in list_node_ids_of_faces_remove_duplicates:
-        coordinates = model_manager.get_node_coordinates(id)
-        print(coordinates)
-        
-        if coordinates:
-            list_node_id_remove_duplicates.append(id)
-            list_coordinate_remove_duplicates.append(coordinates)
-            # print(f"Coordinates of Node ID {id}: {coordinates}")
+        if model_manager.is_element_in_elset(element_id, "SolidProperty1") == True:
+            surface_sides = model_manager.get_surface_side(element_id)
+            # print(surface_sides[0][1])
+            node_ids = model_manager.get_element_node_ids(element_id)
+            list_node_id.append(node_ids)
+            print(node_ids)
+            node_ids_of_faces = reorder_values(node_ids, surface_sides[0][1])
+            list_node_ids_of_faces = list_node_ids_of_faces + node_ids_of_faces
+            # print(node_ids_of_faces)
+        # print(list_node_ids_of_faces)
+        list_node_ids_of_faces_remove_duplicates = remove_duplicates(list_node_ids_of_faces)
+        # print(list_node_ids_of_faces_remove_duplicates)
+        for id in list_node_ids_of_faces_remove_duplicates:
+            coordinates = model_manager.get_node_coordinates(id)
+            
+            if coordinates:
+                list_node_id_remove_duplicates.append(id)
+                list_coordinate_remove_duplicates.append(coordinates)
+                # print(f"Coordinates of Node ID {id}: {coordinates}")
     return model_manager, list_node_id_remove_duplicates, list_coordinate_remove_duplicates
 
 def calculate_distance(coord1, coord2):
