@@ -1,12 +1,12 @@
 def excel_round(number, ndigits=0):
     factor = 10 ** ndigits
-    # Multiply the number to shift the decimal place
+    # Multiply by the factor to shift decimal places
     shifted_number = number * factor
+    # Adjust for precision issues by adding a very small number (epsilon)
+    epsilon = 1e-10
+    shifted_number += epsilon
     # Apply Excel-like rounding: away from zero when halfway
-    if shifted_number - int(shifted_number) == 0.5:
-        if number >= 0:
-            return (int(shifted_number) + 1) / factor
-        else:
-            return (int(shifted_number) - 1) / factor
+    if shifted_number - int(shifted_number) >= 0.5:
+        return (int(shifted_number) + 1) / factor
     else:
-        return round(number, ndigits)
+        return int(shifted_number) / factor
