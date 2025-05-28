@@ -1,0 +1,11 @@
+Mode	Freq. [Hz]	Dominant	%Torsion	%Tension	%Bending
+7	38.79	bending	0.0	0.1	99.9
+8	175.62	bending	0.0	0.0	100.0
+9	296.68	torsion	99.9	0.0	0.1
+10	357.81	bending	0.0	15.3	84.7
+11	462.62	bending	0.2	0.0	99.8
+12	511.97	tension	0.0	68.6	31.4
+13	645.1	torsion	97.3	0.0	2.7
+14	925.5	bending	1.4	0.0	98.6
+15	1048.2	tension	0.0	64.6	35.4
+16	1223.61	bending	0.0	17.9	82.1
